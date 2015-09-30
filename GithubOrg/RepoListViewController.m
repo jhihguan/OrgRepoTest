@@ -7,6 +7,7 @@
 //
 
 #import "RepoListViewController.h"
+#import "RepoDetailViewController.h"
 #import "GithubAPIManager.h"
 #import <SVProgressHUD.h>
 
@@ -26,7 +27,6 @@ static NSString *const USUAL_CELL = @"REPO_TITLE_CELL";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self.tableView registerClass:[UITableViewCell class]  forCellReuseIdentifier:USUAL_CELL];
     [self loadRepos];
 }
 
@@ -63,6 +63,7 @@ static NSString *const USUAL_CELL = @"REPO_TITLE_CELL";
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
     NSDictionary *repoDict = [_dataArray objectAtIndex:indexPath.row];
     cell.textLabel.text = [repoDict valueForKey:@"name"];
+    cell.detailTextLabel.text = [[NSString alloc] initWithFormat:@"star: %@", [repoDict valueForKey:@"stargazers_count"]];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -72,6 +73,16 @@ static NSString *const USUAL_CELL = @"REPO_TITLE_CELL";
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return _dataArray.count;
+}
+
+#pragma mark - Segue
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    static NSString *const CELL_SEGUE = @"repolist_detail";
+    if ([segue.identifier isEqualToString:CELL_SEGUE]) {
+        RepoDetailViewController *detailVC = segue.destinationViewController;
+        detailVC.repoDictionary = [_dataArray objectAtIndex:[self.tableView indexPathForSelectedRow].row];
+    }
 }
 
 /*

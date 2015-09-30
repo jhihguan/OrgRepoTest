@@ -50,5 +50,13 @@
     }];
 }
 
+- (void)loadRepoEventList:(NSString *)repoEventUrl completion:(GHArrayBlock)complete {
+    [_manager GET:repoEventUrl parameters:nil success:^(AFHTTPRequestOperation *operation, id responseData) {
+        complete(nil, responseData);
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        complete(error, nil);
+    }];
+}
+
 
 @end
